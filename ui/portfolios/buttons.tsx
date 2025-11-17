@@ -3,7 +3,7 @@ import { EyeIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 export function ViewPortfolio({ id }: { id: string }) {
-    return (
+  return (
     <Link
       href={`/portfolios/${id}`}
       className="flex h-10 w-12 items-center justify-center rounded-lg text-white hover:bg-gray-800"
@@ -14,7 +14,7 @@ export function ViewPortfolio({ id }: { id: string }) {
 }
 
 export function DeletePortfolio({ id }: { id: string }) {
-    const deletePortfolioWithId = deletePortfolio.bind(null, id)
+  const deletePortfolioWithId = deletePortfolio.bind(null, id)
 
   return (
     <form action={deletePortfolioWithId}>
@@ -32,7 +32,7 @@ export function CreatePortfolio() {
   return (
     <Link
       href={`/portfolios/${id}`}
-      className="flex h-10 w-40 items-center justify-center rounded-lg text-white bg-blue-600 hover:bg-blue-800"
+      className="mx-auto flex h-10 w-40 items-center justify-center rounded-lg text-white bg-blue-600 hover:bg-blue-800"
     >
       <PlusIcon className="h-5 mr-2" />
       {' '}<span className="hidden md:block">Portfolio</span>
