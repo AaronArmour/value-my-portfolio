@@ -1,13 +1,12 @@
-import Link from "next/link";
 import { DeletePortfolio, ViewPortfolio } from "./buttons";
+import { Portfolio } from "@/lib/types";
 
-const portfolios = [
-  {id: "1", name: "Portfolio 1", value: 1000},
-  {id: "2", name: "Portfolio 2", value: 2000},
-  {id: "3", name: "Portfolio 3", value: 3000}
-];
+type PortfolioTableProps = {
+  portfolios: Portfolio[];
+};
 
-export function PortfolioTable() {
+
+export function PortfolioTable({ portfolios } : PortfolioTableProps) {
   return (
   <table className="w-[70%] mx-auto table-auto">
     
