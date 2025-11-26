@@ -3,3 +3,10 @@ export type Portfolio = {
   name: string;
   value: number;
 }
+
+export type Holding = {
+  id: string;
+  portfolio_id: string;
+  ticker: string;
+  quantity: number;
+}
