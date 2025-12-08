@@ -1,5 +1,6 @@
 import { portfolios, allHoldings } from "@/lib/placeholder-data";
 import { quattrocento } from "@/ui/fonts";
+import { AddHoldingButton } from "@/ui/portfolio/add-holding";
 import { AddHolding, BackToPortfolios } from "@/ui/portfolio/buttons";
 import Holdings from "@/ui/portfolio/holdings-table";
 import Valuation from "@/ui/portfolio/valuation";
@@ -32,7 +33,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         <Holdings holdings={holdings}/>
       </div>
 
-      <AddHolding />
+      <AddHoldingButton />
     </div>
   );
 }
