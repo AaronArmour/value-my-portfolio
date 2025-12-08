@@ -1,6 +1,7 @@
 import { Holding } from "@/lib/types";
 import { DeleteHolding, EditHolding } from "./buttons";
 import { DeleteHoldingButton } from "./delete-holding";
+import { EditHoldingButton } from "./edit-holding";
 
 type HoldingsTableProps = {
   holdings: Holding[];
@@ -27,7 +28,7 @@ export default function Holdings(props: HoldingsTableProps) {
                 <td>{holding.quantity}</td>
                 <td>{"$????"}</td>
                 <td>
-                  <EditHolding id={holding.id} />
+                  <EditHoldingButton holding={holding} />
                 </td>
                 <td>
                   <DeleteHoldingButton holding={holding} />
