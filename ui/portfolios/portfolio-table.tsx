@@ -1,5 +1,6 @@
-import { DeletePortfolio, ViewPortfolio } from "./buttons";
+import { ViewPortfolio } from "./buttons";
 import { Portfolio } from "@/lib/types";
+import { DeletePortfolioButton } from "./delete-portfolio";
 
 type PortfolioTableProps = {
   portfolios: Portfolio[];
@@ -26,7 +27,7 @@ export function PortfolioTable({ portfolios } : PortfolioTableProps) {
             <ViewPortfolio id={portfolio.id} />
           </td>
           <td>
-            <DeletePortfolio id={portfolio.id} />
+            <DeletePortfolioButton portfolio={portfolio} />
           </td>
         </tr>
       ))}
