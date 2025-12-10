@@ -1,6 +1,6 @@
 'use client';
 
-import { Portfolio } from "@/lib/types";
+import { Holding, Portfolio, PriceMap } from "@/lib/types";
 import { RefreshValuation } from "./buttons";
 import React from "react";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,9 @@ import { Calendar } from "@/components/ui/calendar";
 
 type ValuationProps = {
   portfolio: Portfolio;
+  holdings: Holding[];
+  priceMap: PriceMap;
+  setPriceMapAction: React.Dispatch<React.SetStateAction<PriceMap>>;
 }
 
 export default function Valuation(props: ValuationProps) {

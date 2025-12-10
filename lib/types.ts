@@ -10,3 +10,5 @@ export type Holding = {
   ticker: string;
   quantity: number;
 }
+
+export type PriceMap = Map<string, number>;
