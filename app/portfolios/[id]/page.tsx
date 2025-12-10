@@ -6,10 +6,6 @@ import { BackToPortfolios } from "@/ui/portfolio/buttons";
 import { notFound } from "next/navigation";
 import PortfolioContent from "./PortfolioContent";
 
-function getTickers(holdings: Holding[]) {
-  return holdings.map((h) => h.ticker);
-}
-
 async function getInitialPriceMap(holdings: Holding[]) {
   const tickers = holdings.map((h) => h.ticker);
   const prices = await Promise.all(
@@ -25,19 +21,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   const id = params.id;
 
   const portfolio = portfolios.find((p) => p.id === id);
-  const holdings = allHoldings.filter((h) => h.portfolio_id === id);
-
-  const tickers = getTickers(holdings);
-
-  const initialPriceMap = await getInitialPriceMap(holdings);
-  console.log(holdings);
-  console.log(tickers);
-
-  console.log(initialPriceMap);
-
+  
   if (!portfolio) {
     notFound();
   }
+
+  const holdings = allHoldings.filter((h) => h.portfolio_id === id);
+  const initialPriceMap = await getInitialPriceMap(holdings);
   
   return (
     <div className="w-[60vw] mx-auto text-left mt-[5vh]">
