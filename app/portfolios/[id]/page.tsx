@@ -1,21 +1,33 @@
 import { portfolios, allHoldings } from "@/lib/placeholder-data";
+import { Holding } from "@/lib/types";
 import { quattrocento } from "@/ui/fonts";
 import { AddHoldingButton } from "@/ui/portfolio/add-holding";
-import { AddHolding, BackToPortfolios } from "@/ui/portfolio/buttons";
-import Holdings from "@/ui/portfolio/holdings-table";
-import Valuation from "@/ui/portfolio/valuation";
+import { BackToPortfolios } from "@/ui/portfolio/buttons";
 import { notFound } from "next/navigation";
+import PortfolioContent from "./PortfolioContent";
+
+async function getInitialPriceMap(holdings: Holding[]) {
+  const tickers = holdings.map((h) => h.ticker);
+  const prices = await Promise.all(
+    tickers.map(async (t) => await fetch(`http://localhost:8000/api/price?symbol=${t}`)
+      .then((res) => res.json()))
+  );
+
+  return new Map(prices.map((p) => [p.symbol, p.current_price]));
+}
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
 
   const portfolio = portfolios.find((p) => p.id === id);
-  const holdings = allHoldings.filter((h) => h.portfolio_id === id);
-
+  
   if (!portfolio) {
     notFound();
   }
+
+  const holdings = allHoldings.filter((h) => h.portfolio_id === id);
+  const initialPriceMap = await getInitialPriceMap(holdings);
   
   return (
     <div className="w-[60vw] mx-auto text-left mt-[5vh]">
@@ -25,13 +37,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         <BackToPortfolios />
       </div>
 
-      <div className="mb-[5vh]">
-        <Valuation portfolio={portfolio}/>
-      </div>
-      
-      <div className="mb-[5vh]">
-        <Holdings holdings={holdings}/>
-      </div>
+      <PortfolioContent 
+        portfolio={portfolio}
+        holdings={holdings}
+        initialPriceMap={initialPriceMap}
+      />
 
       <AddHoldingButton />
     </div>
