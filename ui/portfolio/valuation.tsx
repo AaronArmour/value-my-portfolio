@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { getPortfolioValue } from "@/lib/portfolio";
+import { getCurrentPriceMap, getHistoricalPriceMap } from "@/lib/actions";
 
 type ValuationProps = {
   portfolio: Portfolio;
@@ -18,18 +19,31 @@ type ValuationProps = {
 }
 
 export default function Valuation(props: ValuationProps) {
-  const { holdings, priceMap } = props;
+  const { holdings, priceMap, setPriceMapAction } = props;
   const [useCurrent, setUseCurrent] = React.useState(true)
   const [date, setDate] = React.useState<Date | undefined>(new Date())
 
   const value = getPortfolioValue(holdings, priceMap);
+
+  async function onRefresh() {
+    if (!useCurrent && date) {
+      const newPriceMap = await getHistoricalPriceMap(holdings, date);
+      setPriceMapAction(newPriceMap);
+    } else {
+      const newPriceMap = await getCurrentPriceMap(holdings);
+      setPriceMapAction(newPriceMap);
+    }
+
+    console.log(useCurrent, date, priceMap);
+  };
+
 
   return (
     <div>
       <h2 className="text-2xl">Value</h2>
       <div className="flex items-center space-x-4">
         <p className="text-xl">{`$${value.toFixed(2)}`}</p>
-        <RefreshValuation id={props.portfolio.id}/>
+        <RefreshValuation onRefreshAction={onRefresh}/>
       </div>
 
       <div className="flex items-center gap-4">
