@@ -1,20 +1,10 @@
 import { portfolios, allHoldings } from "@/lib/placeholder-data";
-import { Holding } from "@/lib/types";
 import { quattrocento } from "@/ui/fonts";
 import { AddHoldingButton } from "@/ui/portfolio/add-holding";
 import { BackToPortfolios } from "@/ui/portfolio/buttons";
 import { notFound } from "next/navigation";
 import PortfolioContent from "./PortfolioContent";
-
-async function getInitialPriceMap(holdings: Holding[]) {
-  const tickers = holdings.map((h) => h.ticker);
-  const prices = await Promise.all(
-    tickers.map(async (t) => await fetch(`http://localhost:8000/api/price?symbol=${t}`)
-      .then((res) => res.json()))
-  );
-
-  return new Map(prices.map((p) => [p.symbol, p.current_price]));
-}
+import { getInitialPriceMap } from "@/lib/actions";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
