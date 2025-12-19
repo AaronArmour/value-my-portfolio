@@ -22,7 +22,7 @@ export function PortfolioTable({ portfolios } : PortfolioTableProps) {
       {portfolios.map((portfolio => 
         <tr key={portfolio.id}>
           <td>{portfolio.name}</td>
-          <td>{"$" + portfolio.value}</td>
+          <td>{"$" + portfolio.value.toFixed(2)}</td>
           <td>
             <ViewPortfolio id={portfolio.id} />
           </td>
