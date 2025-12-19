@@ -2,15 +2,15 @@ import { quattrocento } from "@/ui/fonts";
 import { CreatePortfolio } from "@/ui/portfolios/buttons";
 import { PortfolioTable } from "@/ui/portfolios/portfolio-table";
 import { allHoldings, portfolios } from "@/lib/placeholder-data";
-import { getInitialPriceMap } from "@/lib/actions";
+import { getCurrentPriceMap } from "@/lib/actions";
 import { getPortfolioValue } from "@/lib/portfolio";
 
 export default async function Page() {
-  const initialPriceMap = await getInitialPriceMap(allHoldings);
+  const currentPriceMap = await getCurrentPriceMap(allHoldings);
 
   portfolios.forEach((portfolio) => {
     const holdings = allHoldings.filter((h) => h.portfolio_id === portfolio.id);
-    portfolio.value = getPortfolioValue(holdings, initialPriceMap);
+    portfolio.value = getPortfolioValue(holdings, currentPriceMap);
   });
   
   return (
