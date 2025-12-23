@@ -33,10 +33,7 @@ export default function Valuation(props: ValuationProps) {
       const newPriceMap = await getCurrentPriceMap(holdings);
       setPriceMapAction(newPriceMap);
     }
-
-    console.log(useCurrent, date, priceMap);
   };
-
 
   return (
     <div>
