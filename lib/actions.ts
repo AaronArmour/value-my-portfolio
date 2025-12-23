@@ -1,17 +1,70 @@
 'use server';
 
-import { Holding } from "./types";
+import { Holding, PriceMap } from "./types";
+import { fetchJson } from "./utils";
 
 export async function deletePortfolio(id: string) {
   console.log(`You clicked on delete for portfolio ${id}`);
 }
 
-export async function getInitialPriceMap(holdings: Holding[]) {
-  const tickers = holdings.map((h) => h.ticker);
-  const prices = await Promise.all(
-    tickers.map(async (t) => await fetch(`http://localhost:8000/api/price?symbol=${t}`)
-      .then((res) => res.json()))
+export async function getCurrentPriceMap(
+  holdings: Holding[]
+): Promise<PriceMap> {
+  const results = await Promise.allSettled(
+    holdings.map(async (h) => {
+      const data = await fetchJson<{
+        symbol: string;
+        current_price?: number;
+      }>(`http://localhost:8000/api/price?symbol=${h.ticker}`);
+
+      return {
+        ticker: h.ticker,
+        price: data?.current_price ?? null,
+      };
+    })
   );
 
-  return new Map(prices.map((p) => [p.symbol, p.current_price]));
+  const priceMap: PriceMap = new Map();
+
+  for (const result of results) {
+    if (result.status === "fulfilled") {
+      priceMap.set(result.value.ticker, result.value.price);
+    }
+  }
+
+  return priceMap;
+}
+
+
+export async function getHistoricalPriceMap(
+  holdings: Holding[],
+  date: Date
+): Promise<PriceMap> {
+  const dateOnly = date.toISOString().split("T")[0];
+
+  const results = await Promise.allSettled(
+    holdings.map(async (h) => {
+      const data = await fetchJson<{
+        symbol: string;
+        historical_price?: number;
+      }>(
+        `http://localhost:8000/api/price?symbol=${h.ticker}&date=${dateOnly}`
+      );
+
+      return {
+        ticker: h.ticker,
+        price: data?.historical_price ?? null,
+      };
+    })
+  );
+
+  const priceMap: PriceMap = new Map();
+
+  for (const result of results) {
+    if (result.status === "fulfilled") {
+      priceMap.set(result.value.ticker, result.value.price);
+    }
+  }
+
+  return priceMap;
 }

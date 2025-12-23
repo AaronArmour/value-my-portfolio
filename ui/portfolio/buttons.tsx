@@ -15,10 +15,15 @@ export function BackToPortfolios() {
   );
 }
 
-export function RefreshValuation({ id }: { id: string }) {
-  const handleRefresh = () => {
-    console.log(`You clicked on refresh valuation for portfolio ${id}`);
-  }
+export function RefreshValuation({ onRefreshAction }: { onRefreshAction: () => Promise<void>}) {
+  const handleRefresh = async () => {
+    try {
+      await onRefreshAction();
+    } catch (err) {
+      console.error("Error refreshing valuation:", err);
+    }
+  };
+
 
   return (
     <button 

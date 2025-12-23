@@ -4,7 +4,7 @@ import { AddHoldingButton } from "@/ui/portfolio/add-holding";
 import { BackToPortfolios } from "@/ui/portfolio/buttons";
 import { notFound } from "next/navigation";
 import PortfolioContent from "./PortfolioContent";
-import { getInitialPriceMap } from "@/lib/actions";
+import { getCurrentPriceMap } from "@/lib/actions";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -17,7 +17,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   }
 
   const holdings = allHoldings.filter((h) => h.portfolio_id === id);
-  const initialPriceMap = await getInitialPriceMap(holdings);
+  const currentPriceMap = await getCurrentPriceMap(holdings);
   
   return (
     <div className="w-[60vw] mx-auto text-left mt-[5vh]">
@@ -30,7 +30,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       <PortfolioContent 
         portfolio={portfolio}
         holdings={holdings}
-        initialPriceMap={initialPriceMap}
+        initialPriceMap={currentPriceMap}
       />
 
       <AddHoldingButton />

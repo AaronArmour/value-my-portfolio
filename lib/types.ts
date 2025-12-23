@@ -11,4 +11,4 @@ export type Holding = {
   quantity: number;
 }
 
-export type PriceMap = Map<string, number>;
+export type PriceMap = Map<string, number | null>;
