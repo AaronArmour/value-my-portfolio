@@ -27,12 +27,20 @@ export default function Holdings(props: HoldingsTableProps) {
             {holdings.map((holding => 
               <tr key={holding.id}>
                 <td>{holding.ticker}</td>
-                <td>${
-                    priceMap.has(holding.ticker) ? priceMap.get(holding.ticker)?.toFixed(2) : undefined
+                <td>{
+                    typeof priceMap.get(holding.ticker) === 'number' ? (
+                      `$${priceMap.get(holding.ticker)?.toFixed(2)}`
+                    ) : (
+                      <span className="text-red-400">N/A</span>
+                    )
                   }</td>
                 <td>{holding.quantity}</td>
-                <td>${
-                    priceMap.has(holding.ticker) ? (holding.quantity * priceMap.get(holding.ticker)!)?.toFixed(2) : undefined
+                <td>{
+                    typeof priceMap.get(holding.ticker) === 'number' ? (
+                      `$${(holding.quantity * priceMap.get(holding.ticker)!)?.toFixed(2)}`
+                    ) : (
+                      <span className="text-red-400">N/A</span>
+                    )
                   }</td>
                 <td>
                   <EditHoldingButton holding={holding} />

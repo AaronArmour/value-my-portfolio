@@ -1,10 +1,9 @@
 import { Holding, PriceMap } from "./types";
 
 export function getPortfolioValue(holdings: Holding[], priceMap: PriceMap) {
-  let value = 0;
-  holdings.forEach((h) => {
-    value += h.quantity * priceMap.get(h.ticker)! // TODO: be more careful and add error checking
-  });
-
-  return value;
+  return holdings.reduce((sum, h) => {
+    const price = priceMap.get(h.ticker);
+    if (price == null) return sum; // skip missing prices
+    return sum + price * h.quantity;
+  }, 0);
 }
