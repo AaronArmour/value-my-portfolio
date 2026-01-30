@@ -1,11 +1,14 @@
 import { quattrocento } from "@/ui/fonts";
 import { CreatePortfolio } from "@/ui/portfolios/buttons";
 import { PortfolioTable } from "@/ui/portfolios/portfolio-table";
-import { allHoldings, portfolios } from "@/lib/placeholder-data";
 import { getCurrentPriceMap } from "@/lib/actions";
 import { getPortfolioValue } from "@/lib/portfolio";
+import { fetchHoldings, fetchPortfolios } from "@/lib/data";
 
 export default async function Page() {
+  const portfolios = await fetchPortfolios();
+  const allHoldings = await fetchHoldings();
+
   const currentPriceMap = await getCurrentPriceMap(allHoldings);
 
   portfolios.forEach((portfolio) => {
