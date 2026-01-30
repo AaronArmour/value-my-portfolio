@@ -1,22 +1,22 @@
-import { portfolios, allHoldings } from "@/lib/placeholder-data";
 import { quattrocento } from "@/ui/fonts";
 import { AddHoldingButton } from "@/ui/portfolio/add-holding";
 import { BackToPortfolios } from "@/ui/portfolio/buttons";
 import { notFound } from "next/navigation";
 import PortfolioContent from "./PortfolioContent";
 import { getCurrentPriceMap } from "@/lib/actions";
+import { fetchHoldingsByPortfolioId, fetchPortfolioById } from "@/lib/data";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
 
-  const portfolio = portfolios.find((p) => p.id === id);
+  const portfolio = await fetchPortfolioById(id);
   
   if (!portfolio) {
     notFound();
   }
 
-  const holdings = allHoldings.filter((h) => h.portfolio_id === id);
+  const holdings = await fetchHoldingsByPortfolioId(id);
   const currentPriceMap = await getCurrentPriceMap(holdings);
   
   return (
