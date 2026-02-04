@@ -1,7 +1,10 @@
 'use server';
 
+import postgres from 'postgres';
 import { Holding, PriceMap } from "./types";
 import { fetchJson } from "./utils";
+
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function deletePortfolio(id: string) {
   console.log(`You clicked on delete for portfolio ${id}`);
@@ -67,4 +70,29 @@ export async function getHistoricalPriceMap(
   }
 
   return priceMap;
+}
+
+export async function updateHolding(holdingId: string, quantity: number, userId: string | null = null) {
+  try {
+    if (userId) {
+      await sql`
+      UPDATE holdings h
+      SET quantity = ${quantity}
+      FROM portfolios p
+      WHERE p.id = h.portfolio_id
+        AND h.id = ${holdingId}
+        AND p.user_id = ${ userId }`;
+    } else {
+      await sql`
+      UPDATE holdings h
+      SET quantity = ${quantity}
+      FROM portfolios p
+      WHERE p.id = h.portfolio_id
+        AND h.id = ${holdingId}
+        AND p.user_id IS NULL`;
+    }
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to update holdings data.');
+  }
 }
