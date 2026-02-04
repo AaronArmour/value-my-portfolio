@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,20 +17,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Holding } from "@/lib/types";
 import { PencilIcon } from "@heroicons/react/24/outline";
+import { updateHolding } from "@/lib/actions";
 
 type EditHoldingButtonProps = {
   holding: Holding
 }
 
 export function EditHoldingButton({ holding }: EditHoldingButtonProps) {
+  const router = useRouter();
   const [shares, setShares] = useState(holding.quantity);
   const [open, setOpen] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add your update logic here (API call, state update, etc.)
+    await updateHolding(holding.id, shares);
     console.log(`Updated shares for ${holding.ticker} (id=${holding.id}): ${shares}`);
     setOpen(false); // close dialog after saving
+    router.refresh();
   };
 
   return (
