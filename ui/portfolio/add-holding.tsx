@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,17 +16,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { addHolding } from "@/lib/actions";
 
-export function AddHoldingButton() {
+type AddHoldingButtonProps = {
+  portfolioId: string;
+};
+
+export function AddHoldingButton({ portfolioId }: AddHoldingButtonProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [ticker, setTicker] = useState("");
   const [quantity, setQuantity] = useState(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add your update logic here (API call, state update, etc.)
+    await addHolding(ticker, quantity, portfolioId);
     console.log("New holding:", { ticker, quantity });
     setOpen(false); // close dialog after saving
+    router.refresh();
   };
 
   return (
