@@ -97,7 +97,7 @@ export async function updateHolding(holdingId: string, quantity: number, userId:
   }
 }
 
-async function isTickerValid(ticker: string) {
+export async function isTickerValid(ticker: string) {
   try {
     const data = await fetchJson<{
       symbol: string;
@@ -116,12 +116,13 @@ export async function addHolding(ticker: string, quantity: number, portfolioId: 
   userId: string | null = null) {
   if (quantity <= 0) throw new Error('Quantity must be positive.');
 
-  if (await isTickerValid(ticker)) {
+  try {
     await sql`
     INSERT INTO holdings (ticker, quantity, portfolio_id)
     VALUES (${ ticker }, ${ quantity }, ${ portfolioId });
     `;
-  } else {
-    throw new Error('Ticker is invalid.');
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to add new holdings data.');
   }
 }
