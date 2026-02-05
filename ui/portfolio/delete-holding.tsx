@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -12,6 +13,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { removeHolding } from "@/lib/actions";
 import { Holding } from "@/lib/types"
 import { TrashIcon } from "@heroicons/react/24/outline"
 
@@ -20,9 +22,16 @@ type DeleteHoldingButtonProps = {
 }
 
 export function DeleteHoldingButton({ holding }: DeleteHoldingButtonProps) {
-  const handleDelete = () => {
+  const router = useRouter();
+  
+  const handleDelete = async () => {
+    try {
+      await removeHolding(holding.id);
+    } catch (error) {
+      console.error(error);
+    }
     console.log(`Holding ${holding.ticker} (with id=${holding.id}) deleted!`)
-    // Later you can replace this with an API call or state update
+    router.refresh();
   }
 
   return (
