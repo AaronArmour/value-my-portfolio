@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,17 +16,34 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { addHolding, isTickerValid } from "@/lib/actions";
 
-export function AddHoldingButton() {
+type AddHoldingButtonProps = {
+  portfolioId: string;
+};
+
+export function AddHoldingButton({ portfolioId }: AddHoldingButtonProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [ticker, setTicker] = useState("");
+  const [tickerError, setTickerError] = useState(false);
   const [quantity, setQuantity] = useState(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add your update logic here (API call, state update, etc.)
+    try {
+      if (!await isTickerValid(ticker)) {
+        setTickerError(true);
+        return;
+      }
+      
+      await addHolding(ticker, quantity, portfolioId);
+    } catch (error) {
+      console.error(error);
+    }
     console.log("New holding:", { ticker, quantity });
     setOpen(false); // close dialog after saving
+    router.refresh();
   };
 
   return (
@@ -36,6 +54,7 @@ export function AddHoldingButton() {
         if (isOpen) {
           // Reset form state when dialog opens
           setTicker("");
+          setTickerError(false);
           setQuantity(0);
         }
       }}
@@ -62,9 +81,15 @@ export function AddHoldingButton() {
               id="ticker"
               type="text"
               value={ticker}
-              onChange={(e) => setTicker(e.target.value.toUpperCase())}
+              onChange={(e) => {
+                setTicker(e.target.value.toUpperCase());
+                setTickerError(false);
+              }}
               placeholder="e.g. AAPL"
             />
+            {
+              tickerError && <p className="text-red-500">Invalid ticker</p>
+            }
           </div>
 
           <div className="grid gap-2">
@@ -87,7 +112,7 @@ export function AddHoldingButton() {
             </DialogClose>
             <Button
               type="submit"
-              disabled={ticker === "" || quantity === 0}
+              disabled={ticker === "" || tickerError || quantity === 0}
             >
               Add Holding
             </Button>

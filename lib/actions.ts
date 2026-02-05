@@ -96,3 +96,33 @@ export async function updateHolding(holdingId: string, quantity: number, userId:
     throw new Error('Failed to update holdings data.');
   }
 }
+
+export async function isTickerValid(ticker: string) {
+  try {
+    const data = await fetchJson<{
+      symbol: string;
+      valid: boolean;
+      current_price: number | null;
+    }>(`http://localhost:8000/api/check_symbol?symbol=${ticker}`);
+
+    return data?.valid;
+  } catch (error) {
+    console.error('Error checking ticker validity:', error);
+    throw new Error('Failed to check ticker validity.');
+  }
+}
+
+export async function addHolding(ticker: string, quantity: number, portfolioId: string, 
+  userId: string | null = null) {
+  if (quantity <= 0) throw new Error('Quantity must be positive.');
+
+  try {
+    await sql`
+    INSERT INTO holdings (ticker, quantity, portfolio_id)
+    VALUES (${ ticker }, ${ quantity }, ${ portfolioId });
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to add new holdings data.');
+  }
+}

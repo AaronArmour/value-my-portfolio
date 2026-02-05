@@ -33,7 +33,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         initialPriceMap={currentPriceMap}
       />
 
-      <AddHoldingButton />
+      <AddHoldingButton 
+        portfolioId={id}
+      />
     </div>
   );
 }
