@@ -114,6 +114,7 @@ export async function isTickerValid(ticker: string) {
 
 export async function addHolding(ticker: string, quantity: number, portfolioId: string, 
   userId: string | null = null) {
+  // TODO: need to add validation that userId owns this portfolio/holding before proceeding
   if (quantity <= 0) throw new Error('Quantity must be positive.');
 
   try {
@@ -124,5 +125,17 @@ export async function addHolding(ticker: string, quantity: number, portfolioId: 
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to add new holdings data.');
+  }
+}
+
+export async function removeHolding(holdingId: string, userId: string | null = null) {
+  // TODO: need to add validation that userId owns this portfolio/holding before proceeding
+  try {
+    await sql`
+    DELETE FROM holdings WHERE id = ${ holdingId }
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to remove holdings data.');
   }
 }
