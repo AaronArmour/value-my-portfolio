@@ -166,3 +166,20 @@ export async function addPortfolio(name: string, userId: string | null = null) {
     throw new Error('Failed to add new portfolio.');
   }
 }
+
+export async function removePortfolio(portfolioId: string, userId: string | null = null) {
+  try {
+    if (userId) {
+      await sql`
+      DELETE FROM portfolios WHERE id = ${ portfolioId } AND user_id = ${ userId }
+      `;
+    } else {
+      await sql`
+      DELETE FROM portfolios WHERE id = ${ portfolioId }
+      `;
+    }
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to remove portfolio.');
+  }
+}
