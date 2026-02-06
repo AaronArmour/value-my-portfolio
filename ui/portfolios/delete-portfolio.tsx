@@ -12,17 +12,27 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { removePortfolio } from "@/lib/actions";
 import { Portfolio } from "@/lib/types"
 import { TrashIcon } from "@heroicons/react/24/outline"
+import { useRouter } from "next/navigation";
 
 type DeletePortfolioButtonProps = {
   portfolio: Portfolio
 }
 
 export function DeletePortfolioButton({ portfolio }: DeletePortfolioButtonProps) {
-  const handleDelete = () => {
+  const router = useRouter();
+  
+  const handleDelete = async () => {
+    try {
+      await removePortfolio(portfolio.id);
+    } catch (error) {
+      console.error(error);
+    }
+
     console.log(`Portfolio ${portfolio.name} (with id=${portfolio.id}) deleted!`)
-    // TODO: replace this with an API call or state update later
+    router.refresh();
   }
 
   return (
@@ -39,7 +49,7 @@ export function DeletePortfolioButton({ portfolio }: DeletePortfolioButtonProps)
           <AlertDialogTitle>Confirm delete portfolio</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete {" "}
-            <strong>{portfolio.name}</strong>.
+            <strong>{portfolio.name}</strong> and all holdings in this portfolio.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
