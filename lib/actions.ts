@@ -139,3 +139,30 @@ export async function removeHolding(holdingId: string, userId: string | null = n
     throw new Error('Failed to remove holdings data.');
   }
 }
+
+export async function addPortfolio(name: string, userId: string | null = null) {
+  try {
+    let results;
+
+    if (userId) {
+      results = await sql`
+      INSERT INTO portfolios (name, user_id)
+      VALUES (${ name }, ${ userId })
+      RETURNING id;
+      `;
+    } else {
+      results = await sql`
+      INSERT INTO portfolios (name)
+      VALUES (${ name })
+      RETURNING id;
+      `;
+    }
+
+    const id = results[0].id;
+    console.log(`New portfolio created with id = ${id}`);
+    return id;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to add new portfolio.');
+  }
+}
