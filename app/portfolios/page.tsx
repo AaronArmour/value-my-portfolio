@@ -1,9 +1,9 @@
 import { quattrocento } from "@/ui/fonts";
-import { CreatePortfolio } from "@/ui/portfolios/buttons";
 import { PortfolioTable } from "@/ui/portfolios/portfolio-table";
 import { getCurrentPriceMap } from "@/lib/actions";
 import { getPortfolioValue } from "@/lib/portfolio";
 import { fetchHoldings, fetchPortfolios } from "@/lib/data";
+import { AddPortfolioButton } from "@/ui/portfolios/add-portfolio";
 
 export default async function Page() {
   const portfolios = await fetchPortfolios();
@@ -24,7 +24,7 @@ export default async function Page() {
         <PortfolioTable portfolios={portfolios} />
       </div>
       
-      <CreatePortfolio />
+      <AddPortfolioButton />
     </div>
   );
 }
